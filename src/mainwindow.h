@@ -6,10 +6,14 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-class MyDialog : public QDialog {
+class MainWindow : public QDialog {
     Q_OBJECT
+
+public Q_SLOTS:
+  bool loadFromFile();
+
 public:
-    MyDialog(QWidget *parent = 0);
+    MainWindow(QWidget *parent = 0);
 };
 
 #endif // _MY_DIALOG_H_

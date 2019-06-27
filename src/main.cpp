@@ -3,14 +3,15 @@
 #include <QApplication>
 #include <QLabel>
 #include <QDialog>
+#include <QFileDialog>
 
-#include "mydialog.h"
+#include "mainwindow.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    MyDialog *dialog = new MyDialog;
+    MainWindow *dialog = new MainWindow();
     dialog->show();
     return app.exec();
 }
