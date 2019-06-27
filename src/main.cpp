@@ -4,6 +4,8 @@
 #include <QLabel>
 #include <QDialog>
 
+//#include "mydialog.h"
+
 using namespace std;
 
 int main(int argc, char* argv[]) {

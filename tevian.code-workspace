@@ -1,8 +1,11 @@
 {
 	"folders": [
-		{
-			"path": "."
-		}
+    {
+      "path": "."
+    },
+    {
+      "path": "/home/olga/repos/Outsource/RoboTail/software/Raspbian/CurrencyExchange"
+    }
   ],
   "settings": {
     "files.associations": {

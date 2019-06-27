@@ -12,28 +12,31 @@
     "cwd": "${workspaceRoot}/build"
   },
   "tasks": [
-  {
-    "label": "cmake",
-    "command": "cmake",
-    "args": [
-      "-G",
-      "Unix Makefiles",
-      ".."
-    ],
-    "group": "build"
-  },
-  {
-    "label": "make",
-    "command": "make",
-    "args": [
+    {
+      "label": "cmake",
+      "command": "cmake",
+      "args": [
+        "-G",
+        "Unix Makefiles",
+        ".."
+      ],
+      "group": "build"
+    },
+    {
+      "label": "make",
+      "command": "make",
+      "args": [
         "-j",
         "4"
-    ],
-    "group": {
-      "kind": "build", 
-      "isDefault": true
-    },
-    "dependsOn": "cmake",
-  }
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": "cmake",
+      "problemMatcher": [
+        "$gcc"
+      ]
+    }
   ]
 }

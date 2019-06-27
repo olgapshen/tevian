@@ -1,19 +1,24 @@
 cmake_minimum_required (VERSION 3.1)
 project (tevian)
 
-set(CMAKE_CXX_STANDARD 11)
-# set(QT_PATH "/usr/include/x86_64-linux-gnu/qt5")
-# set(QT_PATH_CORE "/usr/include/x86_64-linux-gnu/qt5/QtCore")
-# set(QT_PATH_GUI "/usr/include/x86_64-linux-gnu/qt5/QtGui")
+set(CMAKE_CXX_STANDARD 14)
+#SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fPIC")
 
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+# Find includes in corresponding build directories
+#set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed
+set(CMAKE_AUTOMOC ON)
+# Create code from a list of Qt designer ui files
+#set(CMAKE_AUTOUIC ON)
 
-include_directories(
-  . 
-  # QT_PATH
-  # QT_PATH_CORE
-  # QT_PATH_GUI
-)
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
-add_executable(${PROJECT_NAME} main.cpp)
-target_link_librarieS(${PROJECT_NAME} Qt5::Widgets)
+#message(FATAL_ERROR ${Qt5Widgets_INCLUDE_DIRS})
+#include_directories(${Qt5Core_INCLUDE_DIRS})
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
+#include_directories(src)
+
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
+add_executable(${PROJECT_NAME} ${SOURCES})
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
