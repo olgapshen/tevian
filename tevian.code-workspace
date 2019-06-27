@@ -4,5 +4,11 @@
 			"path": "."
 		}
   ],
-  "settings": {}
+  "settings": {
+    "files.associations": {
+      "qtgui": "cpp",
+      "qtcore": "cpp",
+      "qtcoredepends": "cpp"
+    }
+  }
 }
