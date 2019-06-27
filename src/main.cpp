@@ -4,15 +4,13 @@
 #include <QLabel>
 #include <QDialog>
 
-//#include "mydialog.h"
+#include "mydialog.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
-  QApplication app(argc, argv);
-  QDialog *dialog = new QDialog;
-  QLabel *label = new QLabel(dialog);
-  label->setText("<font color=red>Hello, World!</font>");
-  dialog->show();
-  return app.exec();
+    QApplication app(argc, argv);
+    MyDialog *dialog = new MyDialog;
+    dialog->show();
+    return app.exec();
 }
