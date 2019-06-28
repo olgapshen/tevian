@@ -28,16 +28,9 @@ protected:
 
 private:
   QFileInfoList list;
-  //uint rgbFromWaveLength(double wave);
-  //QImage *imageToShow;
-  //bool isUpdated;
 
   QMutex mutex;
   QWaitCondition condition;
-  // double centerX;
-  // double centerY;
-  // double scaleFactor;
-  // QSize resultSize;
   bool restart;
   bool abort;
 

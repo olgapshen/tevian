@@ -2,16 +2,16 @@
 	"folders": [
     {
       "path": "."
-    },
-    {
-      "path": "/home/olga/repos/Outsource/RoboTail/software/Raspbian/CurrencyExchange"
     }
   ],
   "settings": {
     "files.associations": {
       "qtgui": "cpp",
       "qtcore": "cpp",
-      "qtcoredepends": "cpp"
+      "qtcoredepends": "cpp",
+      "qpainter": "cpp",
+      "*.tcc": "cpp",
+      "string_view": "cpp"
     }
   }
 }

@@ -9,34 +9,20 @@
 #include <vector>
 
 #include "renderthread.h"
+#include "viewpoint.h"
 
 class MainWindow : public QDialog {
     Q_OBJECT
 
 private:
   RenderThread thread;
-  QLabel image;
-  QPoint lastDragPos;
-  QPoint pixmapOffset;
-  double curScale;
-  int x0, y0, x1, y1;
 
   int current_image_index;
   std::vector<QImage> images;
 
-  void handleDir(QString dir);
-  void render();
+  ViewPoint image;
 
-protected:
-  void paintEvent(QPaintEvent *event) override;
-  void resizeEvent(QResizeEvent *event) override;
-  //void keyPressEvent(QKeyEvent *event) override;
-  void mousePressEvent(QMouseEvent *event) override;
-  void mouseMoveEvent(QMouseEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent *event) override;
-#if QT_CONFIG(wheelevent)
-  void wheelEvent(QWheelEvent *event) override;
-#endif
+  void handleDir(QString dir);
 
 private slots:
     void addPixmap(const QImage &image);
