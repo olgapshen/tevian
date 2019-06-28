@@ -40,7 +40,7 @@ protected:
 
 private slots:
     void addPixmap(const QImage &image);
-    void zoom(double zoomFactor);
+    //void zoom(double zoomFactor);
 
 public slots:
   bool loadFromFile();

@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   image.setFixedWidth(Width);
   image.setFixedHeight(Height);
+  image.setScaledContents(true);
 
   QPushButton *closeButton = new QPushButton(this);
   QPushButton *loadButton = new QPushButton(this);
@@ -96,12 +97,12 @@ void MainWindow::resizeEvent(QResizeEvent * /* event */)
   //thread.render(centerX, centerY, curScale, size());
 }
 
-void MainWindow::zoom(double zoomFactor)
-{
-    curScale *= zoomFactor;
-    // update();
-    // thread.render(centerX, centerY, curScale, size());
-}
+// void MainWindow::zoom(double zoomFactor)
+// {
+//     curScale *= zoomFactor;
+//     // update();
+//     // thread.render(centerX, centerY, curScale, size());
+// }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
@@ -133,16 +134,28 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 void MainWindow::render() 
 {
   QImage current_image = images[current_image_index];
+  //int height = Height * curScale;
+  //int width = 
   QRect rect(x0, y0, x1, y1);
-  QImage scaled = current_image.scaledToHeight(Height);//, Qt::KeepAspectRatio);
-  QImage croped = current_image.copy(rect);
-  image.setPixmap(QPixmap::fromImage(current_image));
+
+  QPixmap pixmap = QPixmap::fromImage(current_image);
+  
+  int init_height = pixmap.height();
+  int init_width = pixmap.width();
+  if (init_height > init_width) init_height = init_width;
+  else init_width = init_height;
+  
+  QPixmap init_crop = pixmap.copy(0, 0, init_width, init_height);
+  QPixmap init_scale = init_crop.scaled(Height, Width, Qt::KeepAspectRatioByExpanding);
+  QPixmap crop = init_scale.copy(rect);
+  QPixmap scale = crop.scaled(Height, Width, Qt::KeepAspectRatioByExpanding);
+  image.setPixmap(scale);
 }
 
 void MainWindow::addPixmap(const QImage &aImage)
 {
-  QImage copy = aImage;
-  images.push_back(copy);
+  //QImage copy = aImage;
+  images.push_back(aImage);
   if (-1 == current_image_index) {
     current_image_index = 0;
     render();
@@ -154,6 +167,11 @@ void MainWindow::wheelEvent(QWheelEvent *event)
 {
     int numDegrees = event->delta() / 8;
     double numSteps = numDegrees / 15.0f;
-    zoom(pow(ZoomInFactor, numSteps));
+    curScale *= pow(ZoomInFactor, numSteps);
+    
+    // TODO:: handle max maximization
+    x1 = Height * curScale;
+    y1 = Width * curScale;
+    render();
 }
 #endif

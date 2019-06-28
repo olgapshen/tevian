@@ -40,7 +40,7 @@ void RenderThread::run()
       // request REST
       // Update progress bar
 
-      renderedImage(image);
+      emit renderedImage(image);
     }
 
     mutex.unlock();
