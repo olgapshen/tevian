@@ -10,18 +10,18 @@
 
 class RenderThread : public QThread
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
   RenderThread(QObject *parent = nullptr);
   ~RenderThread();
 
   void handleList(QFileInfoList list);
-  void startThread();
+  //void startThread();
   //void render(QImage &image);
 
 signals:
-    void renderedImage(const QImage &image, double scaleFactor);
+  void renderedImage(const QImage &image);
 
 protected:
   void run() override;
