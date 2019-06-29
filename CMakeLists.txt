@@ -11,14 +11,12 @@ set(CMAKE_AUTOMOC ON)
 # Create code from a list of Qt designer ui files
 #set(CMAKE_AUTOUIC ON)
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)
 
-#message(FATAL_ERROR ${Qt5Widgets_INCLUDE_DIRS})
-#include_directories(${Qt5Core_INCLUDE_DIRS})
-include_directories(${Qt5Widgets_INCLUDE_DIRS})
+include_directories(src ${Qt5Widgets_INCLUDE_DIRS})
 #include_directories(src)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets Qt5::Network)

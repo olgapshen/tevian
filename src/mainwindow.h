@@ -6,27 +6,34 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPoint>
+#include <map>
 #include <vector>
 
-#include "renderthread.h"
+#include "loader.h"
 #include "viewpoint.h"
+#include "requester.h"
+#include "facedata.h"
 
 class MainWindow : public QDialog {
     Q_OBJECT
 
 private:
-  RenderThread thread;
+  Loader loader;
+  Requester requester;
 
   int current_image_index;
-  std::vector<QImage> images;
+  
+  std::map<int, QImage> images;
+  std::map<int, std::vector<FaceData>> data;
+  std::map<int, bool> found;
 
   ViewPoint image;
-
   void handleDir(QString dir);
 
 private slots:
-    void addPixmap(const QImage &image);
-    //void zoom(double zoomFactor);
+  void addPixmap(int imageId, const QImage &image);
+  void restSuccess(int imageId, const QJsonObject& response);
+  void restError(int imageId, const QJsonObject& response);
 
 public slots:
   bool loadFromFile();
