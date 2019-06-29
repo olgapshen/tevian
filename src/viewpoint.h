@@ -16,29 +16,15 @@ private:
   QMutex mutexResize;
   QMutex mutexMove;
   QPoint lastDragPos;
-  //QPoint pixmapOffset;
-  // double curScale;
-  // int x0, y0, x1, y1;
-
-  // qreal h11;
-  // qreal h22;
-  // qreal h12;
-  // qreal h13;
-  // qreal h21;
-  // qreal h23;
-  // qreal h31;
-  // qreal h32;
 
   int x0;
   int y0;
   int x1;
-  int y1; 
-  //double scale;
+  int y1;
+  double imgscale;
   
   QImage image;
 
-  //void resize(double scaleFactor);
-  //void scroll(int deltaX, int deltaY);
   void render();
   void scale(double scale);
   void move(QPoint point);

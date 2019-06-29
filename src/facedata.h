@@ -4,12 +4,21 @@
 struct FaceData {
   double age;
   bool isMale;
-  int x0, x1, y0, y1;
+  int x, y, height, width;
 
   FaceData() {
     age = 0;
     isMale = false;
-    x0 = x1 = y0 = y1 = 0;
+    x = y = height = width = 0;
+  }
+
+  void transform(double scale, FaceData &data) {
+    data.x = x * scale;
+    data.y = y * scale;
+    data.height = height * scale;
+    data.width = width * scale;
+    data.isMale = isMale;
+    data.age = age;
   }
 };
 

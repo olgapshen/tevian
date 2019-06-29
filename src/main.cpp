@@ -7,11 +7,15 @@
 
 #include "mainwindow.h"
 
+#if !QT_CONFIG(wheelevent)
+#error wheelevent not found!
+#endif 
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    QApplication app(argc, argv);
-    MainWindow *dialog = new MainWindow();
-    dialog->show();
-    return app.exec();
+  QApplication app(argc, argv);
+  MainWindow *dialog = new MainWindow();
+  dialog->show();
+  return app.exec();
 }

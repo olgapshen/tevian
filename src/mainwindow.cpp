@@ -103,10 +103,10 @@ void MainWindow::restSuccess(int imageId, const QJsonObject& response) {
     bool isMale = demographics["age"].toObject()["gender"].toBool();
 
     FaceData face;
-    face.x0 = x;
-    face.y0 = y;
-    face.x1 = x + width;
-    face.y1 = y + width;
+    face.x = x;
+    face.y = y;
+    face.width = width;
+    face.height = height;
     face.age = age;
     face.isMale = isMale;
 

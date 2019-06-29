@@ -12,76 +12,31 @@ ViewPoint::ViewPoint(QWidget *parent, int height, int width) :
   Height(height),
   Width(width)
 {
-  // x0 = 0;
-  // y0 = 0;
-  // x1 = Width;
-  // y1 = Height;
-  // curScale = 1;
-
-  // h11 = 1;
-  // h22 = 1;
-
   x0 = 0;
   y0 = 0;
   x1 = Width;
   y1 = Height;
-  //scale = 1;
-
-  // h12 = 0;
-  // h13 = 0;
-  // h21 = 0;
-  // h23 = 0;
-  // h31 = 0;
-  // h32 = 0;
+  imgscale = 1;
 
   setFixedWidth(Width);
   setFixedHeight(Height);
-  setScaledContents(true);
+  //setScaledContents(true);
 }
 
 void ViewPoint::setImage(const QImage &aImage) {
   image = aImage;
   scale(1);
+  //render();
 }
-
-// void ViewPoint::paintEvent(QPaintEvent * /* event */)
-// {
-// }
 
 #if QT_CONFIG(wheelevent)
 void ViewPoint::wheelEvent(QWheelEvent *event)
 {
   mutexResize.lock();
-    // event->
-    // int numDegrees = event->delta() / 8;
-    // double numSteps = numDegrees / 15.0f;
-    // resize(pow(ZoomFactor, numSteps));
-
 
   const int degrees = event->delta()  / 8;
   int steps = degrees / 15;
-  //qDebug() << steps;
-  //double scaleFactor = 0.9; //How fast we zoom
-  double currentScale = pow(ZoomFactor, steps);
-  //qDebug() << currentScale;
-  if (currentScale > 0.5 && currentScale < 1.5) scale(currentScale);
-
-  // const qreal minFactor = 1.0;
-  // const qreal maxFactor = 10.0;
-  
-  // if(steps > 0)
-  // {
-  //   h11 = (h11 >= maxFactor) ? h11 : (h11 + scaleFactor);
-  //   h22 = (h22 >= maxFactor) ? h22 : (h22 + scaleFactor);
-  // }
-  // else
-  // {
-  //   h11 = (h11 <= minFactor) ? minFactor : (h11 - scaleFactor);
-  //   h22 = (h22 <= minFactor) ? minFactor : (h22 - scaleFactor);
-  // } 
-  
-  // qDebug() << h11;
-  // qDebug() << h22;
+  scale(pow(ZoomFactor, steps));
 
   mutexResize.unlock();
 }
@@ -90,10 +45,8 @@ void ViewPoint::wheelEvent(QWheelEvent *event)
 void ViewPoint::mousePressEvent(QMouseEvent *event)
 {
     mutexMove.lock();
-    if (event->button() == Qt::LeftButton) {
-      //pixmapOffset = lastDragPos;
+    if (event->button() == Qt::LeftButton)
       lastDragPos = event->pos();
-    }
     mutexMove.unlock();
 }
 
@@ -103,59 +56,62 @@ void ViewPoint::mouseReleaseEvent(QMouseEvent *event)
   if (event->button() == Qt::LeftButton) {
     QPoint point = lastDragPos - event->pos();
     lastDragPos = QPoint();
-
-    // qDebug() << pixmapOffset.x();
-    // qDebug() << pixmapOffset.y();
-
-    // x0 += pixmapOffset.x();
-    // y0 += pixmapOffset.y();
-
-    // //QImage current = images[]
-
-    // int deltaX = (width() - image.width()) / 2 - pixmapOffset.x();
-    // int deltaY = (height() - image.height()) / 2 - pixmapOffset.y();
-
-    // if (x0 + deltaX < 0 || x1 + deltaX > Width) return;
-    // if (y0 + deltaY < 0 || y1 + deltaY > Height) return;
-
-    // x0 += deltaX;
-    // x1 += deltaX;
-
-    // y0 += deltaY;
-    // y1 += deltaY;
-
-    //render();
-    //scroll(deltaX, deltaY);
     move(point);
   }
   mutexMove.unlock();
 }
 
-// void MainWindow::mouseMoveEvent(QMouseEvent *event)
-// {
-//     if (event->buttons() & Qt::LeftButton) {
-//         pixmapOffset += event->pos() - lastDragPos;
-//         lastDragPos = event->pos();
-//         update();
-//     }
-// }
-
 void ViewPoint::render() {
   mutexRender.lock();
-  QRect rect(x0, y0, x1, y1);
+
+  int tx0 = x0 * image.width() / Width;
+  int ty0 = y0 * image.height() / Height;
+  int tx1 = x1 * image.width() / Width;
+  int ty1 = y1 * image.height() / Height;
+  QRect rect(tx0, ty0, tx1, ty1);
+
   QPixmap pixmap = QPixmap::fromImage(image);
   
-  int init_height = pixmap.height();
-  int init_width = pixmap.width();
-  if (init_height > init_width) init_height = init_width;
-  else init_width = init_height;
+  // int init_height = pixmap.height();
+  // int init_width = pixmap.width();
+  // if (init_height > init_width) init_height = init_width;
+  // else init_width = init_height;
 
-  QPixmap init_crop = pixmap.copy(0, 0, init_width, init_height);
-  QPixmap init_scale = init_crop.scaled(Height, Width, Qt::KeepAspectRatioByExpanding);
-  QPixmap crop = init_scale.copy(rect);
+  //QPixmap init_crop = pixmap.copy(0, 0, init_width, init_height);
+  //QPixmap init_scale = pixmap.scaled(Height, Width, Qt::KeepAspectRatio);
+  QPixmap crop = pixmap.copy(rect);
+  //qDebug() << crop.width();
+  QPixmap scaled = crop.scaled(Height, Width, Qt::KeepAspectRatio);
   
-  setPixmap(crop);
+  setPixmap(scaled);
   mutexRender.unlock();
+}
+
+void ViewPoint::scale(double scale)
+{
+  if (imgscale * scale < 0.3) return;
+  
+  int currWidth = x1 - x0;
+  int currHeight = y1 - y0;
+  //int imageHeight = image.height();
+  //int imageWidth = image.width();
+
+  if (currWidth * scale > Width || currHeight * scale > Height) {
+    //currWidth = Width;
+    //currHeight = Height;
+    x0 = y0 = 0;
+    x1 = Width;
+    y1 = Height;
+    imgscale = 1;
+  } else {
+    currWidth *= scale;
+    currHeight *= scale;
+    x1 = x0 + currWidth;
+    y1 = y0 + currHeight;
+    imgscale *= scale;
+  }
+
+  render();
 }
 
 void ViewPoint::move(QPoint point)
@@ -163,74 +119,29 @@ void ViewPoint::move(QPoint point)
   qDebug() << "point.x" << point.x();
   qDebug() << "point.y" << point.y();
 
-  if (
-    x0 + point.x() < 0 || 
-    y0 + point.y() < 0 ||
-    x1 + point.x() > Width || 
-    y1 + point.y() > Height
-  ) {
-    return;
+  int moveX = point.x() / (image.width() / Width);
+
+  if (x0 + point.x() < 0) {
+    x1 -= x0;
+    x0 = 0;
+  } else if (x1 + point.x() > Width) {
+    x0 += Width - x1;
+    x1 = Width;
   } else {
     x0 += point.x();
-    y0 += point.y();
     x1 += point.x();
+  }
+
+  if (y0 + point.y() < 0) {
+    y1 -= y0;
+    y0 = 0;
+  } else if (y1 + point.y() > Height) {
+    y0 += Height - y1;
+    y1 = Height;
+  } else {
+    y0 += point.y();
     y1 += point.y();
   }
 
   render();
 }
-
-void ViewPoint::scale(double scale)
-{
-  int currWidth = x1 - x0;
-  int currHeight = y1 - y0;
-
-  if (currWidth * scale > Width || currHeight * scale > Height) {
-    currWidth = Width;
-    currHeight = Height;
-  } else {
-    currWidth *= scale;
-    currHeight *= scale;
-  }
-
-  x1 = x0 + currWidth;
-  y1 = y0 + currHeight;
-
-  qDebug() << "currWidth" << currWidth;
-  qDebug() << "currHeight" << currHeight;
-
-  render();
-}
-
-// void ViewPoint::resize(double scaleFactor){
-//   double scale = curScale * scaleFactor;
-//   int preX = x1 * scale;
-//   int preY = x1 * scale;
-
-//   if (scale > 2 || scale < 0.5) return;
-//   if (preX >= Height || preX >= Width) return; 
-//   if (preY <= 0 || preY <= 0) return; 
-
-//   x1 = preX;
-//   y1 = preY;
-
-//   if (x1 == 0) {
-//     int r = 0;
-//   }
-  
-//   curScale = scale;
-//   // x1 = scaleX;
-//   // y1 = scaleY;
-//   render();
-// }
-
-// void ViewPoint::scroll(int deltaX, int deltaY)
-// {  
-//   x0 += deltaX;
-//   x1 += deltaX;
-
-//   y0 += deltaY;
-//   y1 += deltaY;
-
-//   render();
-// }
