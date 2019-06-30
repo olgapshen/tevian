@@ -5,7 +5,7 @@
 #include <QImage>
 #include <QMutex>
 
-class ViewPoint : public QLabel {
+class ViewPoint : public QWidget {
   Q_OBJECT
 
 private:
@@ -23,14 +23,14 @@ private:
   int y1;
   double imgscale;
   
-  QImage image;
+  QPixmap image;
 
   void render();
   void scale(double scale);
   void move(QPoint point);
 
 protected:
-  //void paintEvent(QPaintEvent *event) override;
+  void paintEvent(QPaintEvent *event) override;
   //void resizeEvent(QResizeEvent *event) override;
   //void keyPressEvent(QKeyEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
