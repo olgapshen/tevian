@@ -4,6 +4,8 @@
 
 Compile project and build debian package with: `./make_deb.sh` from root repository directory.  
 
+GitHub [link][0]  
+
 Install docker image:  
 
 ```
@@ -36,3 +38,5 @@ Run the command:
 ```
 tevian_cli -t <token> -f /var/package/cats1.jpg
 ```
+
+  [0]: git@github.com:olgapshen/tevian.git
