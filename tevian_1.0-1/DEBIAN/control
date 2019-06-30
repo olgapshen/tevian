@@ -1,0 +1,9 @@
+Package: tevian
+Version: 1.0-1
+Section: base
+Priority: optional
+Architecture: i386
+Maintainer: Koshka <ya.olgapshenichnikova@yandex.ru>
+Description: Tevian exam project
+ Hope it is good
+ 
