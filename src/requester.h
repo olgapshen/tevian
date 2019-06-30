@@ -33,8 +33,6 @@ private:
   void handleQtNetworkErrors(QNetworkReply *reply, QJsonObject &obj);
   QNetworkAccessManager *manager;
 
-
-
 signals:
   void onSuccess(int imageId, const QJsonObject& response);
   void onError(int imageId, const QJsonObject& response);

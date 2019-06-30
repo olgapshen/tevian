@@ -18,14 +18,14 @@ private:
   QFileInfoList list;
   QMutex mutex;
   QWaitCondition condition;
-  bool restart;
-  bool abort;
+  bool aborted;
 
 public:
   Loader(QObject *parent = nullptr);
   ~Loader();
 
   void load(QFileInfoList list);
+  void abort();
 
 signals:
   void renderedImage(int imageId, const QImage &image);

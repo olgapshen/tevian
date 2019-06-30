@@ -20,23 +20,27 @@ class MainWindow : public QDialog {
 private:
   Loader loader;
   Requester requester;
+  ViewPoint image;
 
   int current_image_index;
-  
+  //bool error_state;
+
   std::map<int, QImage> images;
   std::map<int, std::vector<FaceData>> data;
   std::map<int, bool> found;
 
-  ViewPoint image;
   void handleDir(QString dir);
 
+signals:
+  void setError(const QString &status);
+  void ready(bool ready);
+  
 private slots:
+  void setToken(const QString &token);
+  bool loadFromFile();
   void addPixmap(int imageId, const QImage &image);
   void restSuccess(int imageId, const QJsonObject& response);
   void restError(int imageId, const QJsonObject& response);
-
-public slots:
-  bool loadFromFile();
 
 public:
     MainWindow(QWidget *parent = 0);
