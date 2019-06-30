@@ -2,8 +2,8 @@ Package: tevian
 Version: 1.0-1
 Section: base
 Priority: optional
-Architecture: i386
+Architecture: amd64
+Depends: libqt5gui5 (>= 5.9.5)
 Maintainer: Koshka <ya.olgapshenichnikova@yandex.ru>
 Description: Tevian exam project
  Hope it is good
- 
