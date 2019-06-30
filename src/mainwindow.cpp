@@ -111,15 +111,9 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(&requester, &Requester::onError, this, &MainWindow::restError);
   connect(&requester, &Requester::onSuccess, this, &MainWindow::restSuccess);
   connect(&loader, &Loader::detect, &requester, &Requester::detect);
-
-  // TODO: remove
-  // QThread::sleep(1);
-  // setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNjRhNTE3MC0xYzFhLTQwZTMtYTA4ZC0xN2U3YmEzN2M0YWUiLCJzdWIiOjMyLCJpYXQiOjE1NjE4MTUxNDUsIm5iZiI6MTU2MTgxNTE0NSwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjpmYWxzZX0.0myIt5LdLQdd0SSAdH_DhuDkfZ6fv4ATK1tJKU0QiXc");
-  // handleDir("/home/olga/Desktop/images");
 }
 
 void MainWindow::display(int index) {
-  //currentImageIndex = index;
   image.setImage(data[index], images[index]);
 }
 
