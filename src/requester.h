@@ -43,13 +43,7 @@ public slots:
   void setFdMin(int min);
   void setFdMax(int max);
   void setThreshold(double threshold);
-  void detect(
-    int imageId,
-    // int fd_min_size,
-    // int fd_max_size,
-    // double fd_threshold,
-    QImage image
-  );
+  void detect(int imageId, QImage image);
 };
 
 #endif // _NETWORK_REQUEST_H

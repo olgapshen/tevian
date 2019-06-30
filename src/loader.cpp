@@ -1,5 +1,6 @@
 #include "loader.h"
 
+#include <QDebug>
 #include <QDir>
 
 Loader::Loader(QObject *parent) : QThread(parent)
@@ -7,17 +8,12 @@ Loader::Loader(QObject *parent) : QThread(parent)
   aborted = false;
 }
 
-Loader::~Loader()
-{
-    mutex.lock();
-    aborted = true;
-    condition.wakeOne();
-    mutex.unlock();
+Loader::~Loader() { wait(); }
 
-    wait();
+void Loader::abort() { 
+  aborted = true;
+  condition.wakeOne();
 }
-
-void Loader::abort() { aborted = true; }
 
 void Loader::process() { 
   aborted = false; 
@@ -29,7 +25,6 @@ void Loader::load(QFileInfoList aList) {
   if (amount == 0)
     emit setError("No input");
   else {
-    //emit prepare();
     emit counted(amount);
     list = aList;
   }
@@ -60,6 +55,9 @@ void Loader::run()
   forever {
     mutex.lock();
     condition.wait(&mutex);
+    mutex.unlock();
+
+    if (aborted) break;
 
     int imageId = 0;
     for (const auto& i : list)
@@ -74,6 +72,8 @@ void Loader::run()
       imageId++;
     }
 
-    mutex.unlock();
+    //mutex.unlock();
   }
+
+  qDebug() << "loader finish";
 }

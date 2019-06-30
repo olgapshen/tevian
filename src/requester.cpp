@@ -89,6 +89,8 @@ QNetworkRequest Requester::createRequest(const QString &apiStr, const QUrlQuery 
   url.setQuery(query);
   request.setUrl(url);
 
+  qDebug() << "Query: " << url;
+
   request.setRawHeader("Content-Type","image/jpeg");
   request.setRawHeader("accept","application/json");
   request.setRawHeader("Authorization", QString("Bearer %1").arg(token).toUtf8());    

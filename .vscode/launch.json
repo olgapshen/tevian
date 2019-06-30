@@ -2,7 +2,30 @@
 	"version": "0.2.0",
 	"configurations": [
     { 
-      "name": "Debug",
+      "name": "Debug cli",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/build/tevian_cli",
+      "externalConsole": false,
+      "stopAtEntry": false,
+      "cwd": "${workspaceRoot}",
+      "MIMode": "gdb",
+      "args": [
+        "-f", 
+        "~/Desktop/images/cat100.jpeg",
+        "-t",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNjRhNTE3MC0xYzFhLTQwZTMtYTA4ZC0xN2U3YmEzN2M0YWUiLCJzdWIiOjMyLCJpYXQiOjE1NjE4MTUxNDUsIm5iZiI6MTU2MTgxNTE0NSwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjpmYWxzZX0.0myIt5LdLQdd0SSAdH_DhuDkfZ6fv4ATK1tJKU0QiXc"
+      ],
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    { 
+      "name": "Debug ui",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceRoot}/build/tevian_ui",

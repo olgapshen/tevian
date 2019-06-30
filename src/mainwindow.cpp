@@ -86,25 +86,25 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent)
   palette.setColor(error->foregroundRole(), Qt::red);
   error->setPalette(palette);
 
-  grid->addWidget(loadDirButton, 0, 0, Qt::AlignLeft);
-  grid->addWidget(loadFileButton, 0, 1, Qt::AlignLeft);
-  grid->addWidget(startButton, 0, 2, Qt::AlignLeft);
-  grid->addWidget(closeButton, 0, 1, 1, 3, Qt::AlignLeft);
-  grid->addWidget(lblSetToken, 1, 0, 1, 6, Qt::AlignLeft);
-  grid->addWidget(tokenBox, 2, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(loadDirButton,    0, 0, 1, 1, Qt::AlignLeft);
+  grid->addWidget(loadFileButton,   0, 1, 1, 1, Qt::AlignLeft);
+  grid->addWidget(startButton,      0, 2, 1, 1, Qt::AlignLeft);
+  grid->addWidget(closeButton,      0, 3, 1, 3, Qt::AlignLeft);
+  grid->addWidget(lblSetToken,      1, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(tokenBox,         2, 0, 1, 6, Qt::AlignLeft);
   
-  grid->addWidget(lblSetFdMin, 3, 0, 1, 1, Qt::AlignLeft);
-  grid->addWidget(fdMinBox, 3, 1, 1, 1, Qt::AlignLeft);
-  grid->addWidget(lblSetFdMax, 3, 2, 1, 1, Qt::AlignLeft);
-  grid->addWidget(fdMaxBox, 3, 3, 1, 1, Qt::AlignLeft);
-  grid->addWidget(lblSetThreshold, 3, 4, 1, 1, Qt::AlignLeft);
-  grid->addWidget(thresholdBox, 3, 5, 1, 1, Qt::AlignLeft);
+  grid->addWidget(lblSetFdMin,      3, 0, 1, 1, Qt::AlignLeft);
+  grid->addWidget(fdMinBox,         3, 1, 1, 1, Qt::AlignLeft);
+  grid->addWidget(lblSetFdMax,      3, 2, 1, 1, Qt::AlignLeft);
+  grid->addWidget(fdMaxBox,         3, 3, 1, 1, Qt::AlignLeft);
+  grid->addWidget(lblSetThreshold,  3, 4, 1, 1, Qt::AlignLeft);
+  grid->addWidget(thresholdBox,     3, 5, 1, 1, Qt::AlignLeft);
 
-  grid->addWidget(progressBar, 4, 0, 1, 6, Qt::AlignLeft);
-  grid->addWidget(image, 5, 0, 1, 6, Qt::AlignLeft);
-  grid->addWidget(prevButton, 6, 0, 1, 3, Qt::AlignLeft);
-  grid->addWidget(nextButton, 6, 3, 1, 3, Qt::AlignRight);
-  grid->addWidget(error, 7, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(progressBar,      4, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(image,            5, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(prevButton,       6, 0, 1, 3, Qt::AlignLeft);
+  grid->addWidget(nextButton,       6, 3, 1, 3, Qt::AlignRight);
+  grid->addWidget(error,            7, 0, 1, 6, Qt::AlignLeft);
 
   grid->setRowStretch(0, 10);
   grid->setRowStretch(1, 10);
@@ -303,7 +303,6 @@ void MainWindow::restSuccess(int imageId, const QJsonObject& response) {
     face.isMale = isMale;
 
     data[imageId].push_back(face);
-    //found[imageId] = true;
   }
 
   mutex.lock();

@@ -16,7 +16,8 @@
       "qgridlayout": "cpp",
       "chrono": "cpp",
       "limits": "cpp",
-      "qregexpvalidator": "cpp"
+      "qregexpvalidator": "cpp",
+      "iostream": "cpp"
     }
   }
 }

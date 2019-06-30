@@ -30,6 +30,7 @@ signals:
   void loaded(int imageId, const QString path, const QImage &image);
   void detect(int imageId, QImage image);
   void counted(int amount);
+  //void finished();
   void setError(QString error);
 
 public slots:
