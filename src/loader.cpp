@@ -45,8 +45,6 @@ void Loader::run()
       emit detect(imageId, FD_MIN, FD_MAX, THRESHOLD, image);
       emit renderedImage(imageId, image);
 
-      // Update progress bar
-
       imageId++;
     }
 

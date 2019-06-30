@@ -34,7 +34,7 @@ private:
 
   void init();
   void display(int index);
-  void handleFile(QString dir);
+  void handleFiles(QStringList dir);
   void handleDir(QString dir);
 
 signals:
@@ -48,7 +48,7 @@ private slots:
   void setToken(const QString &token);
   void prev();
   void next();
-  bool loadFromFile();
+  bool loadFromFiles();
   bool loadFromDir();
   void addPixmap(int imageId, const QImage &image);
   void restSuccess(int imageId, const QJsonObject& response);

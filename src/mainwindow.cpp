@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(this, &MainWindow::counted, progressBar, &QProgressBar::setMaximum);
   connect(tokenBox, &QLineEdit::textChanged, this, &MainWindow::setToken);
   connect(loadDirButton, &QPushButton::clicked, this, &MainWindow::loadFromDir);
-  connect(loadFileButton, &QPushButton::clicked, this, &MainWindow::loadFromFile);
+  connect(loadFileButton, &QPushButton::clicked, this, &MainWindow::loadFromFiles);
   connect(prevButton, &QPushButton::clicked, this, &MainWindow::prev);
   connect(nextButton, &QPushButton::clicked, this, &MainWindow::next);
   connect(closeButton, &QPushButton::clicked, this, &MainWindow::close);
@@ -113,38 +113,9 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(&loader, &Loader::detect, &requester, &Requester::detect);
 
   // TODO: remove
-  QThread::sleep(1);
-  setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNjRhNTE3MC0xYzFhLTQwZTMtYTA4ZC0xN2U3YmEzN2M0YWUiLCJzdWIiOjMyLCJpYXQiOjE1NjE4MTUxNDUsIm5iZiI6MTU2MTgxNTE0NSwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjpmYWxzZX0.0myIt5LdLQdd0SSAdH_DhuDkfZ6fv4ATK1tJKU0QiXc");
-  handleDir("/home/olga/Desktop/images");
-}
-
-void MainWindow::init() {
-  setError("");
-  reset();
-  currentImageIndex = -1;
-  currentlyProcessed = 0;
-  //found.clear();
-  data.clear();
-  images.clear();
-}
-
-void MainWindow::handleFile(QString path) {
-  init();
-}
-
-void MainWindow::handleDir(QString path) {
-  init();
-
-  QDir dir(path);
-  QStringList nameFilter;
-  nameFilter << "*.png" << "*.jpeg" << "*.jpg";
-  QFileInfoList list = dir.entryInfoList(nameFilter);
-
-  int amount = list.count();
-  if (amount == 0) return;
-
-  counted(amount);
-  loader.load(list);
+  // QThread::sleep(1);
+  // setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNjRhNTE3MC0xYzFhLTQwZTMtYTA4ZC0xN2U3YmEzN2M0YWUiLCJzdWIiOjMyLCJpYXQiOjE1NjE4MTUxNDUsIm5iZiI6MTU2MTgxNTE0NSwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjpmYWxzZX0.0myIt5LdLQdd0SSAdH_DhuDkfZ6fv4ATK1tJKU0QiXc");
+  // handleDir("/home/olga/Desktop/images");
 }
 
 void MainWindow::display(int index) {
@@ -169,9 +140,57 @@ void MainWindow::setToken(const QString &token) {
   ready();
 }
 
-bool MainWindow::loadFromFile()
+void MainWindow::init() {
+  setError("");
+  reset();
+  currentImageIndex = -1;
+  currentlyProcessed = 0;
+  //found.clear();
+  data.clear();
+  images.clear();
+}
+
+void MainWindow::handleFiles(QStringList files) {
+  init();
+  QFileInfoList list;
+
+  for (QString path : files) {
+    QFileInfo info(path);
+    if (info.isFile() && info.isReadable())
+      list.append(info);
+  }
+
+  int amount = list.count();
+  if (amount == 0) return;
+
+  counted(amount);
+  loader.load(list);
+}
+
+void MainWindow::handleDir(QString path) {
+  init();
+
+  QDir dir(path);
+  QStringList nameFilter;
+  nameFilter << "*.png" << "*.jpeg" << "*.jpg";
+  QFileInfoList list = dir.entryInfoList(nameFilter);
+
+  int amount = list.count();
+  if (amount == 0) return;
+
+  counted(amount);
+  loader.load(list);
+}
+
+bool MainWindow::loadFromFiles()
 {
-  // TODO: implement
+  QStringList files = QFileDialog::getOpenFileNames(
+    this,
+    tr("Select files"),
+    ""
+  );
+
+  handleFiles(files);
 }
 
 bool MainWindow::loadFromDir()
@@ -180,7 +199,7 @@ bool MainWindow::loadFromDir()
     this,
     tr("Open images directory"),
     "",
-    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    QFileDialog::ShowDirsOnly
   );
 
   if (dirName.isEmpty()) return false;
