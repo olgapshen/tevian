@@ -1,6 +1,7 @@
 #include "viewpoint.h"
 
 #include <QPainter>
+#include <QTextItem>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QDebug>
@@ -90,16 +91,20 @@ void ViewPoint::paintEvent(QPaintEvent * /* event */)
   {
     FaceData transformed;
     i.transform(scale, x0, y0, transformed);
-    
+
+    QString age("age: ");
+    age.append(QString::number(i.age));
+    QString sex("sex: ");
+    sex.append(i.isMale ? "male" : "female");
+
+    QPoint agePoint(transformed.x, transformed.y + transformed.height + 20);
+    QPoint sexPoint(transformed.x, agePoint.y() + 20);
+
     painter.drawRect(transformed.x, transformed.y, transformed.height, transformed.width);
+    painter.drawText(agePoint, age);
+    painter.drawText(sexPoint, sex);
   }
 }
-
-// void ViewPoint::render() {
-//   mutexRender.lock();
-//   update();
-//   mutexRender.unlock();
-// }
 
 void ViewPoint::scale(double scale)
 {
