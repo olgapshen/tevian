@@ -27,21 +27,15 @@ public:
   ~Loader();
 
 signals:
-  void loaded(int imageId, const QImage &image);
-  void prepare();
+  void loaded(int imageId, const QString path, const QImage &image);
+  void detect(int imageId, QImage image);
   void counted(int amount);
   void setError(QString error);
-  void detect(
-    int imageId,
-    int fd_min_size,
-    int fd_max_size,
-    double fd_threshold,
-    QImage image
-  );
 
 public slots:
   void handleFiles(QStringList dir);
   void handleDir(QString dir);
+  void process();
   void abort();
 
 protected:

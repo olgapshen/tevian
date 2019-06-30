@@ -13,7 +13,10 @@
       "*.tcc": "cpp",
       "string_view": "cpp",
       "qhboxlayout": "cpp",
-      "qgridlayout": "cpp"
+      "qgridlayout": "cpp",
+      "chrono": "cpp",
+      "limits": "cpp",
+      "qregexpvalidator": "cpp"
     }
   }
 }

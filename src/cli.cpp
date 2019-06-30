@@ -20,12 +20,6 @@ int main(int argc, char* argv[]) {
   parser.setApplicationDescription("Face detector");
   parser.addHelpOption();
   parser.addVersionOption();
-  // parser.addPositionalArgument("source", "Folder with files");
-  // parser.addPositionalArgument("file", "Separate file");
-
-
-  //const QStringList args = parser.positionalArguments();
-  // source is args.at(0), destination is args.at(1)
 
   QCommandLineOption tokenOption(
     QStringList() << "t" << "token",
@@ -54,9 +48,6 @@ int main(int argc, char* argv[]) {
   QString token = parser.value(tokenOption);
   QString dir = parser.value(sourceDirectoryOption);
   QStringList files = parser.values(sourceFilesOption);
-
-  qDebug() << dir;
-  qDebug() << files;
 
   MainTask *task = new MainTask(&app);  
   QObject::connect(task, SIGNAL(finished()), &app, SLOT(quit()));

@@ -20,12 +20,12 @@ public:
 
   explicit Requester(QObject *parent = 0);
 
-  QString getToken() const;
-  void setToken(const QString &value);
-
 private:
   static const QString httpsTemplate;
   QString token;
+  int fdMin;
+  int fdMax;
+  double threshold;
 
   QNetworkRequest createRequest(const QString &apiStr, const QUrlQuery &query);
   QJsonObject parseReply(QNetworkReply *reply);
@@ -39,11 +39,15 @@ signals:
   void onError(int imageId, const QJsonObject& response);
 
 public slots:
+  void setToken(const QString &token);
+  void setFdMin(int min);
+  void setFdMax(int max);
+  void setThreshold(double threshold);
   void detect(
     int imageId,
-    int fd_min_size,
-    int fd_max_size,
-    double fd_threshold,
+    // int fd_min_size,
+    // int fd_max_size,
+    // double fd_threshold,
     QImage image
   );
 };

@@ -27,12 +27,9 @@ private:
   std::map<int, QImage> images;
   std::map<int, std::vector<FaceData>> data;
   
-  void init();
   void display(int index);
 
 signals:
-  //void ready();
-  void reset();
   void abort();
   void stepOn();
   void setError(const QString &status);
@@ -46,7 +43,7 @@ private slots:
   void next();
   bool loadFromFiles();
   bool loadFromDir();
-  void addPixmap(int imageId, const QImage &image);
+  //void addPixmap(int imageId, const QString path, const QImage &image);
   void restSuccess(int imageId, const QJsonObject& response);
   void restError(int imageId, const QJsonObject& response);
 

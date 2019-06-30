@@ -17,24 +17,35 @@ Requester::Requester(QObject *parent) : QObject(parent)
   manager = new QNetworkAccessManager(this);
 }
 
-QString Requester::getToken() const { return token; }
-void Requester::setToken(const QString &value) { 
+void Requester::setToken(const QString &value) {
   token = value;
   emit ready();
 }
 
+void Requester::setThreshold(double threshold) {
+  this->threshold = threshold;
+}
+
+void Requester::setFdMin(int min) {
+  fdMin = min;
+}
+
+void Requester::setFdMax(int max) {
+  fdMax = max;
+}
+
 void Requester::detect(
   int imageId,
-  int fd_min_size,
-  int fd_max_size,
-  double fd_threshold,
+  // int fd_min_size,
+  // int fd_max_size,
+  // double fd_threshold,
   QImage image
 ) {
   QUrlQuery query;
 
-  query.addQueryItem("fd_min_size", QString::number(fd_min_size));
-  query.addQueryItem("fd_max_size", QString::number(fd_max_size));
-  query.addQueryItem("fd_threshold", QString::number(fd_threshold));
+  query.addQueryItem("fd_min_size", QString::number(fdMin));
+  query.addQueryItem("fd_max_size", QString::number(fdMax));
+  query.addQueryItem("fd_threshold", QString::number(threshold));
   query.addQueryItem("demographics", "true");
 
   QNetworkRequest request = createRequest("api/v1/detect", query);

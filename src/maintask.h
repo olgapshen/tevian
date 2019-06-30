@@ -5,14 +5,20 @@
 
 class MainTask : public QObject {
     Q_OBJECT
-public:
-    MainTask(QObject *parent = 0);// : QObject(parent) {}
 
-public slots:
-    void run();
+private:
+  int amount;
+
+  void restSuccess(int imageId, const QJsonObject& response);
+  void restFailed(int imageId, const QJsonObject& response);
+
+public:
+  MainTask(QObject *parent = 0);// : QObject(parent) {}
 
 signals:
-    void finished();
+  void handleFiles(QStringList dir);
+  void handleDir(QString dir);
+  void finished();
 };
 
 #endif // _MAIN_TASK_H

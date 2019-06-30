@@ -2,10 +2,6 @@
 
 #include <QDir>
 
-const int FD_MIN = 50;
-const int FD_MAX = 500;
-const double THRESHOLD = 0.2;
-
 Loader::Loader(QObject *parent) : QThread(parent)
 {
   aborted = false;
@@ -23,16 +19,19 @@ Loader::~Loader()
 
 void Loader::abort() { aborted = true; }
 
+void Loader::process() { 
+  aborted = false; 
+  condition.wakeOne();
+}
+
 void Loader::load(QFileInfoList aList) {
   int amount = aList.count();
   if (amount == 0)
     emit setError("No input");
   else {
-    emit prepare();
+    //emit prepare();
     emit counted(amount);
     list = aList;
-    aborted = false;
-    condition.wakeOne();
   }
 }
 
@@ -68,9 +67,10 @@ void Loader::run()
       if (aborted) break;
 
       QImage image;
-      image.load(i.canonicalFilePath());
-      emit loaded(imageId, image);
-      emit detect(imageId, FD_MIN, FD_MAX, THRESHOLD, image);
+      QString path = i.canonicalFilePath();
+      image.load(path);
+      emit loaded(imageId, path, image);
+      emit detect(imageId, image);
       imageId++;
     }
 
