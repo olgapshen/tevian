@@ -68,8 +68,8 @@ int main(int argc, char* argv[]) {
 
   QString token = parser.value(tokenOption);
   double threshold = parser.value(thresholdOption).toDouble();
-  int fdMin = parser.value(thresholdOption).toInt();
-  int fdMax = parser.value(thresholdOption).toInt();
+  int fdMin = parser.value(fdMinOption).toInt();
+  int fdMax = parser.value(fdMaxOption).toInt();
   QString dir = parser.value(sourceDirectoryOption);
   QStringList files = parser.values(sourceFilesOption);
 
