@@ -89,7 +89,7 @@ void ViewPoint::paintEvent(QPaintEvent * /* event */)
   for (const auto& i : data)
   {
     FaceData transformed;
-    i.transform(scale, transformed);
+    i.transform(scale, x0, y0, transformed);
     
     painter.drawRect(transformed.x, transformed.y, transformed.height, transformed.width);
   }
