@@ -139,7 +139,6 @@ void MainWindow::init() {
   reset();
   currentImageIndex = -1;
   currentlyProcessed = 0;
-  //found.clear();
   data.clear();
   images.clear();
 }

@@ -30,8 +30,7 @@ private:
 
   std::map<int, QImage> images;
   std::map<int, std::vector<FaceData>> data;
-  //std::map<int, bool> found;
-
+  
   void init();
   void display(int index);
   void handleFiles(QStringList dir);

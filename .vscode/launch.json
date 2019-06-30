@@ -5,7 +5,7 @@
       "name": "Debug",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/build/tevian",
+      "program": "${workspaceRoot}/build/tevian_ui",
       "externalConsole": false,
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
