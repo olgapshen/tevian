@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QProgressBar>
 #include <math.h>
 
 #include "mainwindow.h"
@@ -27,46 +28,84 @@ MainWindow::MainWindow(QWidget *parent) :
   requester(this),
   image(this, CANVAS_HEIGHT, CANVAS_WIDTH)
 {
-  current_image_index = -1;
+  currentImageIndex = -1;
+  currentlyProcessed = 0;
   
   QGridLayout *grid = new QGridLayout(this);
   QPushButton *closeButton = new QPushButton(this);
-  QPushButton *loadButton = new QPushButton(this);
+  QPushButton *loadDirButton = new QPushButton(this);
+  QPushButton *loadFileButton = new QPushButton(this);
+  QPushButton *prevButton = new QPushButton(this);
+  QPushButton *nextButton = new QPushButton(this);
+  QProgressBar *progressBar = new QProgressBar(this);
   QLineEdit *tokenBox = new QLineEdit(this);
   QLabel *lblSetToken = new QLabel(this);
   QLabel *error = new QLabel(this);
 
-  loadButton->setText(tr("Upload"));
+  loadDirButton->setText(tr("Upload dir"));
+  loadFileButton->setText(tr("Upload file"));
+  prevButton->setText(tr("Prev"));
+  nextButton->setText(tr("Next"));
+  loadDirButton->setEnabled(false);
+  loadFileButton->setEnabled(false);
   closeButton->setText(tr("Close"));
   lblSetToken->setText("Set API Token:");
-  loadButton->setEnabled(false);
-  error->setFixedHeight(STATUS_HEIGHT);
   tokenBox->setFixedWidth(CANVAS_WIDTH);
+  progressBar->setVisible(false);
+  progressBar->setFixedWidth(CANVAS_WIDTH);
+  error->setFixedHeight(STATUS_HEIGHT);
+  
   grid->setSpacing(10);
   
   QPalette palette = error->palette();
   palette.setColor(error->foregroundRole(), Qt::red);
   error->setPalette(palette);
 
-  grid->addWidget(loadButton, 0, 0, Qt::AlignLeft);
-  grid->addWidget(closeButton, 0, 1, 1, 5, Qt::AlignLeft);
+  grid->addWidget(loadDirButton, 0, 0, Qt::AlignLeft);
+  grid->addWidget(loadFileButton, 0, 1, Qt::AlignLeft);
+  grid->addWidget(closeButton, 0, 1, 1, 4, Qt::AlignLeft);
   grid->addWidget(lblSetToken, 1, 0, 1, 6, Qt::AlignLeft);
   grid->addWidget(tokenBox, 2, 0, 1, 6, Qt::AlignLeft);
-  grid->addWidget(&image, 3, 0, 1, 6, Qt::AlignLeft);
-  grid->addWidget(error, 4, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(progressBar, 3, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(&image, 4, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(prevButton, 5, 0, 1, 3, Qt::AlignLeft);
+  grid->addWidget(nextButton, 5, 3, 1, 3, Qt::AlignRight);
+  grid->addWidget(error, 6, 0, 1, 6, Qt::AlignLeft);
 
   grid->setRowStretch(0, 10);
   grid->setRowStretch(1, 10);
   grid->setRowStretch(2, 10);
-  grid->setRowStretch(3, 0);
+  grid->setRowStretch(3, 10);
   grid->setRowStretch(4, 0);
+  grid->setRowStretch(5, 10);
+  grid->setRowStretch(6, 10);
 
   loader.start();
 
-  connect(this, &MainWindow::ready, loadButton, &QLabel::setEnabled);
+  connect(this, &MainWindow::ready, loadDirButton, [loadDirButton, loadFileButton]() { 
+    loadFileButton->setEnabled(true);
+    loadDirButton->setEnabled(true);
+  });
+
+  connect(this, &MainWindow::reset, progressBar, [progressBar]() {
+    progressBar->setVisible(true);
+    progressBar->reset();
+  });
+
+  connect(this, &MainWindow::stepOn, progressBar, [this, progressBar]() {
+    mutex.lock();
+    currentlyProcessed++;
+    progressBar->setValue(currentlyProcessed);
+    mutex.unlock();
+  });
+
   connect(this, &MainWindow::setError, error, &QLabel::setText);
+  connect(this, &MainWindow::counted, progressBar, &QProgressBar::setMaximum);
   connect(tokenBox, &QLineEdit::textChanged, this, &MainWindow::setToken);
-  connect(loadButton, &QPushButton::clicked, this, &MainWindow::loadFromFile);
+  connect(loadDirButton, &QPushButton::clicked, this, &MainWindow::loadFromDir);
+  connect(loadFileButton, &QPushButton::clicked, this, &MainWindow::loadFromFile);
+  connect(prevButton, &QPushButton::clicked, this, &MainWindow::prev);
+  connect(nextButton, &QPushButton::clicked, this, &MainWindow::next);
   connect(closeButton, &QPushButton::clicked, this, &MainWindow::close);
   connect(&loader, &Loader::renderedImage, this, &MainWindow::addPixmap);
   connect(&requester, &Requester::onError, this, &MainWindow::restError);
@@ -79,27 +118,64 @@ MainWindow::MainWindow(QWidget *parent) :
   handleDir("/home/olga/Desktop/images");
 }
 
-void MainWindow::handleDir(QString path) {
-  current_image_index = -1;
-  found.clear();
+void MainWindow::init() {
+  setError("");
+  reset();
+  currentImageIndex = -1;
+  currentlyProcessed = 0;
+  //found.clear();
+  data.clear();
   images.clear();
+}
+
+void MainWindow::handleFile(QString path) {
+  init();
+}
+
+void MainWindow::handleDir(QString path) {
+  init();
 
   QDir dir(path);
   QStringList nameFilter;
   nameFilter << "*.png" << "*.jpeg" << "*.jpg";
   QFileInfoList list = dir.entryInfoList(nameFilter);
+
+  int amount = list.count();
+  if (amount == 0) return;
+
+  counted(amount);
   loader.load(list);
+}
+
+void MainWindow::display(int index) {
+  //currentImageIndex = index;
+  image.setImage(data[index], images[index]);
+}
+
+void MainWindow::prev() {
+  if (0 == currentImageIndex) return;
+  currentImageIndex--;
+  display(currentImageIndex);
+}
+
+void MainWindow::next() {
+  if (currentImageIndex == images.size() - 1) return;
+  currentImageIndex++;
+  display(currentImageIndex);
 }
 
 void MainWindow::setToken(const QString &token) {
   requester.setToken(token);
-  ready(true);
+  ready();
 }
 
 bool MainWindow::loadFromFile()
 {
-  setError("");
-  
+  // TODO: implement
+}
+
+bool MainWindow::loadFromDir()
+{  
   QString dirName = QFileDialog::getExistingDirectory(
     this,
     tr("Open images directory"),
@@ -138,21 +214,25 @@ void MainWindow::restSuccess(int imageId, const QJsonObject& response) {
     face.isMale = isMale;
 
     data[imageId].push_back(face);
-    found[imageId] = true;
+    //found[imageId] = true;
   }
 
-  if (-1 == current_image_index) {
-    current_image_index = 0;
-    //QImage *image = &images[imageId];
-    image.setImage(data[imageId], images[imageId]);
+  mutex.lock();
+  if (-1 == currentImageIndex) {
+    currentImageIndex = imageId;
+    display(imageId);
   }
+  mutex.unlock();
+
+  stepOn();
 }
 
 void MainWindow::restError(int imageId, const QJsonObject& response) {
   loader.abort();
-  found[imageId] = false;
+  //found[imageId] = false;
   QString message = response["message"].toString();
   setError(message);
+  stepOn();
 }
 
 void MainWindow::addPixmap(int imageId, const QImage &aImage)

@@ -1,8 +1,8 @@
 #include "loader.h"
 
 const int FD_MIN = 50;
-const int FD_MAX = 1000;
-const double THRESHOLD = 0;
+const int FD_MAX = 500;
+const double THRESHOLD = 0.2;
 
 Loader::Loader(QObject *parent) : QThread(parent)
 {
@@ -48,7 +48,6 @@ void Loader::run()
       // Update progress bar
 
       imageId++;
-      break;
     }
 
     mutex.unlock();

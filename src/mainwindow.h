@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPoint>
+#include <QMutex>
+
 #include <map>
 #include <vector>
 
@@ -22,22 +24,32 @@ private:
   Requester requester;
   ViewPoint image;
 
-  int current_image_index;
-  //bool error_state;
+  QMutex mutex;
+  int currentImageIndex;
+  int currentlyProcessed;
 
   std::map<int, QImage> images;
   std::map<int, std::vector<FaceData>> data;
-  std::map<int, bool> found;
+  //std::map<int, bool> found;
 
+  void init();
+  void display(int index);
+  void handleFile(QString dir);
   void handleDir(QString dir);
 
 signals:
+  void ready();
+  void reset();
+  void counted(int amount);
+  void stepOn();
   void setError(const QString &status);
-  void ready(bool ready);
-  
+
 private slots:
   void setToken(const QString &token);
+  void prev();
+  void next();
   bool loadFromFile();
+  bool loadFromDir();
   void addPixmap(int imageId, const QImage &image);
   void restSuccess(int imageId, const QJsonObject& response);
   void restError(int imageId, const QJsonObject& response);
