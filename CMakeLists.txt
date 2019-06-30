@@ -27,7 +27,7 @@ set(
   "src/cli.cpp"
 )
 
-add_library(tevian_lib ${SOURCES_LIB})
+add_library(tevian_lib SHARED ${SOURCES_LIB})
 add_executable(tevian_ui ${SOURCES_UI})
 add_executable(tevian_cli ${SOURCES_CLI})
 
