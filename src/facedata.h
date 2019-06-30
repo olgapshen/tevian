@@ -4,7 +4,7 @@
 struct FaceData {
   double age;
   bool isMale;
-  int x, y, height, width;
+  double x, y, height, width;
 
   FaceData() {
     age = 0;
@@ -12,11 +12,11 @@ struct FaceData {
     x = y = height = width = 0;
   }
 
-  void transform(double scale, FaceData &data) {
-    data.x = x * scale;
-    data.y = y * scale;
-    data.height = height * scale;
-    data.width = width * scale;
+  void transform(double scale, FaceData &data) const {
+    data.x = x / scale;
+    data.y = y / scale;
+    data.height = height / scale;
+    data.width = width / scale;
     data.isMale = isMale;
     data.age = age;
   }

@@ -5,6 +5,8 @@
 #include <QImage>
 #include <QMutex>
 
+#include <facedata.h>
+
 class ViewPoint : public QWidget {
   Q_OBJECT
 
@@ -24,17 +26,15 @@ private:
   double imgscale;
   
   QPixmap image;
+  std::vector<FaceData> data;
 
-  void render();
+  //void render();
   void scale(double scale);
   void move(QPoint point);
 
 protected:
   void paintEvent(QPaintEvent *event) override;
-  //void resizeEvent(QResizeEvent *event) override;
-  //void keyPressEvent(QKeyEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
-  //void mouseMoveEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
 #if QT_CONFIG(wheelevent)
   void wheelEvent(QWheelEvent *event) override;
@@ -42,7 +42,7 @@ protected:
 
 public:
   explicit ViewPoint(QWidget *parent, int height, int width);
-  void setImage(const QImage &aImage);
+  void setImage(std::vector<FaceData> &data, const QImage &aImage);
 
 };
 

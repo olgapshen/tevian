@@ -87,7 +87,6 @@ bool MainWindow::loadFromFile()
 }
 
 void MainWindow::restSuccess(int imageId, const QJsonObject& response) {
-  //int age = 
   QJsonArray arr = response["data"].toArray();
   
   for (const auto& i : arr)
@@ -113,6 +112,12 @@ void MainWindow::restSuccess(int imageId, const QJsonObject& response) {
     data[imageId].push_back(face);
     found[imageId] = true;
   }
+
+  if (-1 == current_image_index) {
+    current_image_index = 0;
+    //QImage *image = &images[imageId];
+    image.setImage(data[imageId], images[imageId]);
+  }
 }
 
 void MainWindow::restError(int imageId, const QJsonObject& response) {
@@ -122,9 +127,4 @@ void MainWindow::restError(int imageId, const QJsonObject& response) {
 void MainWindow::addPixmap(int imageId, const QImage &aImage)
 {
   images[imageId] = aImage;
-
-  if (-1 == current_image_index) {
-    current_image_index = 0;
-    image.setImage(aImage);
-  }
 }
