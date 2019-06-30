@@ -18,7 +18,10 @@ Requester::Requester(QObject *parent) : QObject(parent)
 }
 
 QString Requester::getToken() const { return token; }
-void Requester::setToken(const QString &value) { token = value; }
+void Requester::setToken(const QString &value) { 
+  token = value;
+  emit ready();
+}
 
 void Requester::detect(
   int imageId,

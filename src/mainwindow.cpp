@@ -22,15 +22,15 @@ const int STATUS_HEIGHT = 50;
 
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent) : 
-  QDialog(parent),
-  loader(this),
-  requester(this),
-  image(this, CANVAS_HEIGHT, CANVAS_WIDTH)
+MainWindow::MainWindow(QWidget *parent) : QDialog(parent)
 {
   currentImageIndex = -1;
   currentlyProcessed = 0;
   
+  Loader *loader = new Loader(this);
+  Requester *requester = new Requester(this);
+  ViewPoint *image = new ViewPoint(this, CANVAS_HEIGHT, CANVAS_WIDTH);
+
   QGridLayout *grid = new QGridLayout(this);
   QPushButton *closeButton = new QPushButton(this);
   QPushButton *loadDirButton = new QPushButton(this);
@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
   grid->addWidget(lblSetToken, 1, 0, 1, 6, Qt::AlignLeft);
   grid->addWidget(tokenBox, 2, 0, 1, 6, Qt::AlignLeft);
   grid->addWidget(progressBar, 3, 0, 1, 6, Qt::AlignLeft);
-  grid->addWidget(&image, 4, 0, 1, 6, Qt::AlignLeft);
+  grid->addWidget(image, 4, 0, 1, 6, Qt::AlignLeft);
   grid->addWidget(prevButton, 5, 0, 1, 3, Qt::AlignLeft);
   grid->addWidget(nextButton, 5, 3, 1, 3, Qt::AlignRight);
   grid->addWidget(error, 6, 0, 1, 6, Qt::AlignLeft);
@@ -80,9 +80,9 @@ MainWindow::MainWindow(QWidget *parent) :
   grid->setRowStretch(5, 10);
   grid->setRowStretch(6, 10);
 
-  loader.start();
+  loader->start();
 
-  connect(this, &MainWindow::ready, loadDirButton, [loadDirButton, loadFileButton]() { 
+  connect(requester, &Requester::ready, loadDirButton, [loadDirButton, loadFileButton]() { 
     loadFileButton->setEnabled(true);
     loadDirButton->setEnabled(true);
   });
@@ -99,22 +99,27 @@ MainWindow::MainWindow(QWidget *parent) :
     mutex.unlock();
   });
 
+  connect(this, &MainWindow::abort, loader, &Loader::abort);
+  connect(this, &MainWindow::handleDir, loader, &Loader::handleDir);
+  connect(this, &MainWindow::handleFiles, loader, &Loader::handleFiles);
   connect(this, &MainWindow::setError, error, &QLabel::setText);
-  connect(this, &MainWindow::counted, progressBar, &QProgressBar::setMaximum);
-  connect(tokenBox, &QLineEdit::textChanged, this, &MainWindow::setToken);
+  connect(this, &MainWindow::setImage, image, &ViewPoint::setImage);
+  connect(tokenBox, &QLineEdit::textChanged, requester, &Requester::setToken);
   connect(loadDirButton, &QPushButton::clicked, this, &MainWindow::loadFromDir);
   connect(loadFileButton, &QPushButton::clicked, this, &MainWindow::loadFromFiles);
   connect(prevButton, &QPushButton::clicked, this, &MainWindow::prev);
   connect(nextButton, &QPushButton::clicked, this, &MainWindow::next);
   connect(closeButton, &QPushButton::clicked, this, &MainWindow::close);
-  connect(&loader, &Loader::renderedImage, this, &MainWindow::addPixmap);
-  connect(&requester, &Requester::onError, this, &MainWindow::restError);
-  connect(&requester, &Requester::onSuccess, this, &MainWindow::restSuccess);
-  connect(&loader, &Loader::detect, &requester, &Requester::detect);
+  connect(loader, &Loader::prepare, this, &MainWindow::init);
+  connect(loader, &Loader::counted, progressBar, &QProgressBar::setMaximum);
+  connect(loader, &Loader::loaded, this, &MainWindow::addPixmap);
+  connect(requester, &Requester::onError, this, &MainWindow::restError);
+  connect(requester, &Requester::onSuccess, this, &MainWindow::restSuccess);
+  connect(loader, &Loader::detect, requester, &Requester::detect);
 }
 
 void MainWindow::display(int index) {
-  image.setImage(data[index], images[index]);
+  setImage(data[index], images[index]);
 }
 
 void MainWindow::prev() {
@@ -129,11 +134,6 @@ void MainWindow::next() {
   display(currentImageIndex);
 }
 
-void MainWindow::setToken(const QString &token) {
-  requester.setToken(token);
-  ready();
-}
-
 void MainWindow::init() {
   setError("");
   reset();
@@ -141,38 +141,6 @@ void MainWindow::init() {
   currentlyProcessed = 0;
   data.clear();
   images.clear();
-}
-
-void MainWindow::handleFiles(QStringList files) {
-  init();
-  QFileInfoList list;
-
-  for (QString path : files) {
-    QFileInfo info(path);
-    if (info.isFile() && info.isReadable())
-      list.append(info);
-  }
-
-  int amount = list.count();
-  if (amount == 0) return;
-
-  counted(amount);
-  loader.load(list);
-}
-
-void MainWindow::handleDir(QString path) {
-  init();
-
-  QDir dir(path);
-  QStringList nameFilter;
-  nameFilter << "*.png" << "*.jpeg" << "*.jpg";
-  QFileInfoList list = dir.entryInfoList(nameFilter);
-
-  int amount = list.count();
-  if (amount == 0) return;
-
-  counted(amount);
-  loader.load(list);
 }
 
 bool MainWindow::loadFromFiles()
@@ -240,7 +208,7 @@ void MainWindow::restSuccess(int imageId, const QJsonObject& response) {
 }
 
 void MainWindow::restError(int imageId, const QJsonObject& response) {
-  loader.abort();
+  abort();
   //found[imageId] = false;
   QString message = response["message"].toString();
   setError(message);

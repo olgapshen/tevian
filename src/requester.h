@@ -34,6 +34,7 @@ private:
   QNetworkAccessManager *manager;
 
 signals:
+  void ready();
   void onSuccess(int imageId, const QJsonObject& response);
   void onError(int imageId, const QJsonObject& response);
 

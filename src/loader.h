@@ -20,15 +20,17 @@ private:
   QWaitCondition condition;
   bool aborted;
 
+  void load(QFileInfoList list);
+
 public:
   Loader(QObject *parent = nullptr);
   ~Loader();
 
-  void load(QFileInfoList list);
-  void abort();
-
 signals:
-  void renderedImage(int imageId, const QImage &image);
+  void loaded(int imageId, const QImage &image);
+  void prepare();
+  void counted(int amount);
+  void setError(QString error);
   void detect(
     int imageId,
     int fd_min_size,
@@ -36,6 +38,11 @@ signals:
     double fd_threshold,
     QImage image
   );
+
+public slots:
+  void handleFiles(QStringList dir);
+  void handleDir(QString dir);
+  void abort();
 
 protected:
   void run() override;

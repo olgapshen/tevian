@@ -20,10 +20,6 @@ class MainWindow : public QDialog {
     Q_OBJECT
 
 private:
-  Loader loader;
-  Requester requester;
-  ViewPoint image;
-
   QMutex mutex;
   int currentImageIndex;
   int currentlyProcessed;
@@ -33,18 +29,19 @@ private:
   
   void init();
   void display(int index);
-  void handleFiles(QStringList dir);
-  void handleDir(QString dir);
 
 signals:
-  void ready();
+  //void ready();
   void reset();
-  void counted(int amount);
+  void abort();
   void stepOn();
   void setError(const QString &status);
+  void handleFiles(QStringList dir);
+  void handleDir(QString dir);
+  void setImage(std::vector<FaceData> &imageData, const QImage &aImage);
 
 private slots:
-  void setToken(const QString &token);
+  //void setToken(const QString &token);
   void prev();
   void next();
   bool loadFromFiles();
