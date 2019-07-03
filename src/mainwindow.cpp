@@ -130,7 +130,6 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent)
   connect(this, &MainWindow::stepOn, [this, progressBar]() {
     mutex.lock();
     currentlyProcessed++;
-    progressBar->setVisible(true);
     progressBar->setValue(currentlyProcessed);
     mutex.unlock();
   });
@@ -139,6 +138,7 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent)
     loader,
     &Loader::loaded,
     [this, requester](int imageId, const QString path, const QImage &aImage) {
+      //progressBar->setVisible(false);
       images[imageId] = aImage;
     }
   );
@@ -208,6 +208,7 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent)
 
   connect(startButton, &QPushButton::clicked, [this, progressBar]() {
     setError("");
+    progressBar->setVisible(true);
     progressBar->setValue(0);
     currentImageIndex = -1;
     currentlyProcessed = 0;
@@ -227,6 +228,7 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent)
   connect(nextButton, &QPushButton::clicked, this, &MainWindow::next);
   connect(closeButton, &QPushButton::clicked, this, &MainWindow::close);
   connect(loader, &Loader::counted, progressBar, &QProgressBar::setMaximum);
+  connect(loader, &Loader::counted, progressBar, &QProgressBar::setValue);
   connect(loader, &Loader::detect, requester, &Requester::detect);
   connect(requester, &Requester::onError, this, &MainWindow::restError);
   connect(requester, &Requester::onSuccess, this, &MainWindow::restSuccess); 

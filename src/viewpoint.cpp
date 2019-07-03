@@ -20,6 +20,7 @@ ViewPoint::ViewPoint(QWidget *parent, int height, int width) :
 
 void ViewPoint::setImage(std::vector<FaceData> &imageData, const QImage &aImage) {
   QPixmap pixmap = QPixmap::fromImage(aImage);
+  data.clear();
   data.insert(data.begin(), imageData.begin(), imageData.end());
 
   int init_height = pixmap.height();
