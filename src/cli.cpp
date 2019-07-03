@@ -75,6 +75,9 @@ int main(int argc, char* argv[]) {
 
   MainTask *task = new MainTask(&app);
   
+  // Let thread start
+  QThread::sleep(1);
+
   task->setFdMax(fdMax);
   task->setFdMin(fdMin);
   task->setThreshold(threshold);

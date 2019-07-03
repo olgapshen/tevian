@@ -129,15 +129,6 @@ void ViewPoint::scale(double scale)
     y1 = y0 + currHeight;
   }
 
-  // qDebug() << "imgscale" << imgscale;
-  // qDebug() << "x0" << x0;
-  // qDebug() << "y0" << y0;
-  // qDebug() << "x1" << x1;
-  // qDebug() << "y1" << y1;
-  // qDebug() << "width" << x1 - x0;
-  // qDebug() << "height" << y1 - y0;
-
-  //render();
   update();
 }
 
@@ -149,9 +140,6 @@ void ViewPoint::move(QPoint point)
   int marginVertical = (currentHeight - Height) / 2;
   int right = Height + marginHorizontal;
   int bottom = Width + marginVertical;
-
-  qDebug() << "point.x" << point.x();
-  qDebug() << "point.y" << point.y();
 
   if (x0 + point.x() > 0) {
     x1 += -x0;
@@ -175,13 +163,5 @@ void ViewPoint::move(QPoint point)
     y1 += point.y();
   }
 
-  // qDebug() << "x0" << x0;
-  // qDebug() << "y0" << y0;
-  // qDebug() << "x1" << x1;
-  // qDebug() << "y1" << y1;
-  // qDebug() << "width" << x1 - x0;
-  // qDebug() << "height" << y1 - y0;
-
-  //render();
   update();
 }

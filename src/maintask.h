@@ -17,9 +17,10 @@ private:
   void printResponse(int imageId, const QJsonObject& response);
 
 public:
-  MainTask(QObject *parent = 0);// : QObject(parent) {}
+  MainTask(QObject *parent = 0);
 
 private slots:
+  void counted(int amount);
   void loaded(int imageId, const QString path, const QImage &image);
   void restSuccess(int imageId, const QJsonObject& response);
   void restFailed(int imageId, const QJsonObject& response);

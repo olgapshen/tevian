@@ -8,5 +8,7 @@ RUN mkdir build
 RUN cd build
 RUN cmake ..
 RUN make -j4
+RUN cpack
+RUN dpkg -i tevian-1.0-1-Linux.deb
 RUN cd /usr/local/lib
 RUN ldconfig

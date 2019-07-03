@@ -1,11 +1,11 @@
 #include <maintask.h>
 
 #include <iostream>
-#include <loader.h>
-#include <requester.h>
-
 #include <QDebug>
 #include <QJsonDocument>
+
+#include "loader.h"
+#include "requester.h"
 
 using namespace std;
 
@@ -14,27 +14,11 @@ MainTask::MainTask(QObject *parent) : QObject(parent) {
   Requester *requester = new Requester(this);
   processed = 0;
   
-  // loader->start();
-  // loader->abort();
-  // connect(this, &MainTask::start, this, &MainTask::finished);
-  // return;
   loader->start();
 
-  connect(loader, &Loader::counted, [this](int aAmount) { 
-    cout << "Counted: " << to_string(aAmount) << endl;
-    amount = aAmount; 
-  });
-
-  connect(this, &MainTask::stop, [loader]() { 
-    loader->abort();
-    //loader->quit();
-    //loader->wait();
-  });
-
-  connect(loader, &Loader::finished, [this]() { 
-    emit finished(); 
-  });
-
+  connect(loader, &Loader::counted, this, &MainTask::counted);
+  connect(this, &MainTask::stop, loader, &Loader::abort);
+  connect(loader, &Loader::finished, this, &MainTask::finished);
   connect(this, &MainTask::handleDir, loader, &Loader::handleDir);
   connect(this, &MainTask::handleFiles, loader, &Loader::handleFiles);
   connect(this, &MainTask::start, loader, &Loader::process);
@@ -49,17 +33,16 @@ MainTask::MainTask(QObject *parent) : QObject(parent) {
   connect(requester, &Requester::onError, this, &MainTask::restFailed);
 }
 
-void MainTask::setError(QString error) {
-  qDebug() << error;
-  qDebug() << "on error finished";
-  emit stop();
+void MainTask::counted(int aAmount) {
+  cout << "Counted: " << to_string(aAmount) << endl;
+  amount = aAmount;
 }
 
 void MainTask::onStep() {
   processed++;
   
   if (processed == amount) {
-    qDebug() << "successfull finished";
+    qDebug() << "successfully finished";
     emit stop();
   } 
 }
@@ -69,6 +52,12 @@ void MainTask::printResponse(int imageId, const QJsonObject& response) {
   QJsonDocument doc(response);
   QString strJson(doc.toJson(QJsonDocument::Indented));
   cout << strJson.toStdString() << endl;
+}
+
+void MainTask::setError(QString error) {
+  qDebug() << error;
+  qDebug() << "on error finished";
+  emit stop();
 }
 
 void MainTask::loaded(int imageId, const QString path, const QImage &image) {

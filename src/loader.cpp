@@ -3,20 +3,16 @@
 #include <QDebug>
 #include <QDir>
 
-Loader::Loader(QObject *parent) : QThread(parent)
-{
-  aborted = false;
-}
+Loader::Loader(QObject *parent) : QThread(parent) { aborted = false; }
+Loader::~Loader() { }
 
-Loader::~Loader() { wait(); }
-
-void Loader::abort() { 
+void Loader::abort() {
   aborted = true;
   condition.wakeOne();
 }
 
-void Loader::process() { 
-  aborted = false; 
+void Loader::process() {
+  if (aborted) return;
   condition.wakeOne();
 }
 
@@ -52,6 +48,10 @@ void Loader::handleDir(QString path) {
 
 void Loader::run()
 {
+  if (aborted) return;
+
+  emit threaded();
+
   forever {
     mutex.lock();
     condition.wait(&mutex);
@@ -71,9 +71,5 @@ void Loader::run()
       emit detect(imageId, image);
       imageId++;
     }
-
-    //mutex.unlock();
   }
-
-  qDebug() << "loader finish";
 }
