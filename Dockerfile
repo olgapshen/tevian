@@ -1,14 +1,15 @@
 FROM ubuntu:18.04
 RUN apt-get update
 RUN apt-get install -y qt5-default curl git build-essential cmake
-RUN cd ~
+WORKDIR /root
 RUN git clone https://github.com/olgapshen/tevian.git
-RUN cd tevian
+WORKDIR tevian
 RUN mkdir build
-RUN cd build
+WORKDIR build
 RUN cmake ..
 RUN make -j4
 RUN cpack
 RUN dpkg -i tevian-1.0-1-Linux.deb
-RUN cd /usr/local/lib
+WORKDIR /usr/local/lib
 RUN ldconfig
+WORKDIR /root
