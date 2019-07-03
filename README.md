@@ -1,5 +1,7 @@
 # tevian
 
+> Powered by Koshka!!!
+
 ## Test task for tevian
 
 Compile project and build debian package with: `./make_deb.sh` from root repository directory.  
