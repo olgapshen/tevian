@@ -1,4 +1,5 @@
 build/
 tevian_1.0-1/usr/
 tevian_1.0-1.deb
-images/
+images/*
+!images/cats.jpg

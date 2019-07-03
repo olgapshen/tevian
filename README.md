@@ -5,17 +5,18 @@
 Compile project and build debian package with: `./make_deb.sh` from root repository directory.  
 
 GitHub [link](https://github.com/olgapshen/tevian)  
+DockerHub [link](https://cloud.docker.com/repository/docker/theservercat/tevian) 
 
 Install docker image:  
 
 ```
-sudo docker build -t tevian .
+docker pull theservercat/tevian
 ```
 
 Run container:
 
 ```
-sudo docker run -it --entrypoint /bin/bash tevian
+docker run -it theservercat/tevian /bin/bash
 ```
 
 Go back to host OS in other terminal window.  
@@ -23,7 +24,7 @@ Find ID of the docker process:
 
 
 ```
-sudo docker ps
+docker ps
 ```
 
 Using the ID, copy some images while you attached to console:  
