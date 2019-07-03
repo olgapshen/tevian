@@ -1,4 +1,5 @@
 build/
+.vscode/launch.json
 *.deb
 images/*
 !images/cats.jpg
