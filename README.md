@@ -12,7 +12,7 @@ DockerHub [link](https://cloud.docker.com/repository/docker/theservercat/tevian)
 From root repository directory:  
 
 ```
-docker build .
+docker build -t theservercat/tevian .
 ```
 
 ### Run container
@@ -31,8 +31,10 @@ docker ps
 Using the ID, copy some images while you attached to console:  
 
 ```
-docker cp images/cats2.jpg <ID>:/root/tevian
+docker cp images/cats2.jpg <ID>:/root/tevian/images
 ```
+
+### Run CLI
 
 Go back to docker terminal.  
 Run the command:  
